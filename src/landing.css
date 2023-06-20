@@ -70,7 +70,6 @@ body {
 
 .images{
     width: 50%;
-    height: 500px;
     display: flex;
     flex-direction: column;
     align-items: center;
