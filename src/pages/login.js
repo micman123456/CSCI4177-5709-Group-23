@@ -4,14 +4,15 @@ import '../styles/SignUp.css';
 import Navbar from '../components/Navbar';
 
 const Login = () => {
+  /*
   console.log(localStorage.getItem('token'))
   localStorage.removeItem('token');
   console.log(localStorage.getItem('token'))
-
+*/
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+/*
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -32,6 +33,13 @@ const Login = () => {
       setError('An error occurred');
     }
   };
+  */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("clicked");
+  }
+    
+    
 
   return (
     <>
