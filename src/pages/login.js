@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SignUp.css';
 import Navbar from '../components/Navbar';
@@ -81,9 +82,9 @@ const Login = () => {
         </div>
         <p className="text-center text-muted mt-5 mb-0">
           Don't have an account?{' '}
-          <a href="/sign-up" className="fw-bold text-body">
-            <u>Sign Up here</u>
-          </a>
+          <Link to="/sign-up" className="fw-bold text-body" activeClassName="active-link">
+          <u>Sign Up here</u>
+          </Link>
         </p>
         <br />
       </form>
