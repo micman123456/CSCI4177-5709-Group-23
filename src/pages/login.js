@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SignUp.css';
 import Navbar from '../components/Navbar';
 
 const Login = () => {
-  /*
+  
   console.log(localStorage.getItem('token'))
   localStorage.removeItem('token');
   console.log(localStorage.getItem('token'))
-*/
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-/*
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:3001/login', { email, password });
-      
+      const response = await axios.post('/.netlify/functions/server/login', { email, password });
+      console.log(response.data);
+
 
       if (response.data.success) {
         // Redirect to the dashboard page
         const token = response.data.token;
         // Store the token in local storage
         localStorage.setItem('token', token);
+        console.log(token);
         window.location.href = '/dashboard';
+        
       } else {
         setError(response.data.message);
       }
@@ -34,13 +37,7 @@ const Login = () => {
       setError('An error occurred');
     }
   };
-  */
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("clicked");
-  }
-    
-    
+        
 
   return (
     <>

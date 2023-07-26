@@ -7,15 +7,20 @@ import axios from 'axios';
 import Modal from '../components/AddTaskModal';
 
 const Dashboard = () => {
-  
+  if(!localStorage.getItem('token')){
+    window.location.href = '/logout';
+  }
+  else{
+    console.log(localStorage.getItem('token'));
+  }
+
   const [userId, setUserId] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     if (token) {
-      // Fetch the user ID and tasks once the token is available
       fetchUserId(token);
     } else {
       // Redirect to the logout page if the token is missing
@@ -24,7 +29,7 @@ const Dashboard = () => {
   }, []);
 
   const fetchUserId = (token) => {
-    axios.post('http://localhost:3001/decodeToken', { token })
+    axios.post('/.netlify/functions/server/decodeToken', { token })
       .then((response) => {
         setUserId(response.data.userId);
         localStorage.setItem('userID', response.data.userId);
@@ -36,38 +41,24 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Fetch tasks when the user ID is available
-    if (userId) {
-      axios.get(`http://localhost:3001/api/tasks/${userId}`)
-        .then((response) => {
-          console.log('Fetched tasks:', response.data);
-          setTasks(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching tasks:', error);
-          // Handle the error, display an error message, etc.
-        });
-    }
-  }, [userId])
-  
-  useEffect(() => {
-    // Get the user's id from the JWT or session (replace 'YOUR_USER_ID' with the actual user id)
-    
     const userId = localStorage.getItem('userID');
-    console.log(localStorage.getItem('userID'));
+    if (userId) {
+      fetchTasks(userId);
+    }
+  }, [userId]);
 
-    // Send a request to the backend to fetch tasks based on the user's id
-    axios.get(`http://localhost:3001/api/tasks/${userId}`)
+  const fetchTasks = (userId) => {
+    axios.get(`/.netlify/functions/tasks/?userId=${userId}`)
       .then((response) => {
-        console.log('Fetched tasks: ', response.data); // Log the fetched data
-        // Update the tasks state with the retrieved tasks
         setTasks(response.data);
+        setIsLoading(false); // Set loading to false when data is available
       })
       .catch((error) => {
-        console.error('Error fetching tasks: ', error);
-        // Handle the error, display an error message, etc.
+        console.error('Error fetching tasks:', error);
+        setIsLoading(false); // Set loading to false on error as well
       });
-  }, []);
+  };
+  
 
   const renderTasks = () =>{
     
@@ -76,7 +67,9 @@ const Dashboard = () => {
       console.log(localStorage.getItem('userID'));
   
       // Send a request to the backend to fetch tasks based on the user's id
-      axios.get(`http://localhost:3001/api/tasks/${userId}`)
+      axios.get(`/.netlify/functions/tasks/?userId=${userId}`)
+
+      
         .then((response) => {
           console.log('Fetched tasks: ', response.data); // Log the fetched data
           // Update the tasks state with the retrieved tasks
@@ -247,7 +240,7 @@ const Dashboard = () => {
     const taskIDtoRemove = key;
   
     try {
-      const response = await axios.delete('http://localhost:3001/removeTask', { data: { taskID: taskIDtoRemove } });
+      const response = await axios.delete('/.netlify/functions/server/removeTask', { data: { taskID: taskIDtoRemove } });
       if (response.data.success) {
         for (let i = 0; i < tasks.length; i++){
           if (tasks[i].TASKID == key){
@@ -325,7 +318,7 @@ const Dashboard = () => {
   const completed = 'No';
   const userID = localStorage.getItem('userID');
   try {
-    const response = await axios.post('http://localhost:3001/addTask', {userID,taskName,taskClass,dueDate,taskType,completed});
+    const response = await axios.post('/.netlify/functions/server/addTask', {userID,taskName,taskClass,dueDate,taskType,completed});
     
     if (response.data.success) {
       renderTasks();
